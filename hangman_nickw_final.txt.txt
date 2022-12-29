@@ -1,0 +1,387 @@
+#!/bin/bash
+#Nicholas West
+#CSC 272 S1
+#Bash shell script game - Hangman
+
+#GAME DESCRIPTION
+#This script is a word game in which one player has to guess a word that the 
+#computer has generated randomly from a category chosen by the user. The
+#user will guess the letters in it. Every time they guess a wrong letter, 
+#part of a picture of a person being hanged is drawn, and if the picture is 
+#completed the person guessing has lost.
+
+#Prompts the user to play and displays note.
+printf "Type (yes) to play HANGMAN:"
+read -p "CYBERSECURITY EDITION or (no) to quit: " playGame
+echo
+echo "NOTE: all user input will be lowercase"
+echo
+
+#Runs or exits the game based on user input(yes or no).
+while [ "$playGame" == "yes" ] 
+  do
+    #Variable declaration.
+    category=0
+    toggle=true
+
+    #Funtion: Welcoming header.
+    header () 
+    {
+      echo -e "\n********************WELCOME TO********************"
+      echo "* |  |   /\   |\  | +----  |\    /|   /\   |\  | *"
+      echo "* |--|  /--\  | \ | |  __  | \  / |  /--\  | \ | *"
+      echo "* |  | /    \ |  \| +____| |  \/  | /    \ |  \| *"
+      echo "**************CYBERSECURITY EDITION***************"
+      echo "                                                  "
+    }
+
+    #Function: User Category selection prompt.
+    menu ()
+    {
+      echo "Lets start by choosing a category to generate a   "
+      echo "secret random word from...                        "
+      echo ""
+      echo "1) Protocols    2) Malware     3) Types of Attacks"
+      echo -e "4) Tools        5) OSI Model   6) Linux Commands\n"
+    }
+
+    #Function to display no user failed attemps.
+    fail0 ()
+    {
+      echo "   +-----+   "
+      echo "         |   "
+      echo "         |   "
+      echo "         |   "
+      echo "         |   "
+      echo "       ===== "
+   } 
+
+    #Function to display 1 user failed attempt.
+    fail1 ()
+    {
+      echo "   +-----+   "
+      echo "   O     |   "
+      echo "         |   "
+      echo "         |   "
+      echo "         |   "
+      echo "       ===== "
+    }
+
+    #Function to display 2 user failed attampts.
+    fail2 ()
+    {             
+      echo "   +-----+   "
+      echo "   O     |   "
+      echo "   |     |   "
+      echo "         |   "
+      echo "         |   "
+      echo "       ===== "
+    }
+
+    #Function to display 3 user failed attempts.
+    fail3 ()
+    {             
+      echo "   +-----+   "
+      echo "   O     |   "
+      echo "   |     |   "
+      echo "   |     |   "
+      echo "         |   "
+      echo "       ===== "
+    }
+
+    #Function to display 4 user failed attemps.
+    fail4 ()
+    {             
+      echo "   +-----+   "
+      echo "   O     |   "
+      echo "   |     |   "
+      echo "   |     |   "
+      echo "  /      |   "
+      echo "       ===== "
+    }
+    
+    #Function to display 5 failed user attempts.
+    fail5 ()
+    {             
+      echo "   +-----+   "
+      echo "   O     |   "
+      echo "   |     |   "
+      echo "   |     |   "
+      echo "  / \    |   "
+      echo "       ===== "
+    }
+    
+    #Function to display 6 failed user attempts.
+    fail6 ()
+    {
+      echo "   +-----+   "
+      echo "   O     |   "
+      echo "   |\    |   "
+      echo "   |     |   "
+      echo "  / \    |   "
+      echo "       ===== "
+    }
+
+    #Function to display 7 failed user attempts.
+    fail7 ()
+    {
+      echo "   +-----+   "
+      echo "   O     |   "
+      echo "  /|\    |   "
+      echo "   |     |   "
+      echo "  / \    |   "
+      echo "       ===== "
+    }
+
+    header  #Call header function.
+    menu    #Call menu function.
+
+    #Asks user for another input if previous input was invalid.
+    while [ $toggle == true ]
+      do
+        #Prompt user for category selection.      
+        read -p "Choose a category 1-6: " category
+        
+        #Breaks out of loop if user input is 1-6.
+        if [ $category == 1 -o 2 -o 3 -o 4 -o 5 -o 6 ] ; then
+	    toggle=false	  
+        fi
+      done
+               
+    chosen=""  #Resets variable value.
+
+    #This case selection is based on user input from $category.
+    #User will enter a number from 1-6 that will select a category
+    #and this will load the proper array of words into the program.
+    #After, $chosen is assigned a value and $secretWord is chosen
+    #from array of strings.
+    case $category in
+	    1) 
+	         protocols=("http" "smtp" "dhcp" "ftp" "snmp" "smpp" "ospf"
+    	                    "ipsec" "vpn" "tls" "ssl" "kerberos" "tcp" "udp")
+	         chosen="Protocols"
+		 secretWord=${protocols[RANDOM%12]};;
+
+            2)
+                 malware=("adware" "fileless" "virus" "worm" "trojan" "bot"
+	                  "ransomware" "spyware")
+		 chosen="Malware"
+                 secretWord=${malware[RANDOM%8]};;
+
+	    3)
+                 attackType=("malware" "dos" "ddos" "mitm" "phishing"
+			     "botnet" "spoofing" "rootkit")
+		 chosen="Types of Attacks"
+		 secretWord=${attackType[RANDOM%8]};;
+
+	    4)
+		 tools=("wireshark" "kali" "metasploit" "tcpdump" "nmap"
+	                "bitdefender" "gnupg" "tor" "keypass" "")
+		 chosen="Tools"
+		 secretWord=${tools[RANDOM%9]};;
+
+	    5)
+		 osiModel=("application" "presentation" "session" 
+	                   "transport" "network" "datalink" "physical")
+                 chosen="OSI Model"
+                 secretWord=${osiModel[RANDOM%7]};;
+	    
+            6)
+		 linuxCommands=("whoami" "pwd" "ls" "cd" "touch" "cat"
+	                        "nano" "operators" "mv" "cp" "mkdir" "rm"
+			       	"rmdir" "stat" "echo" "grep" "man")
+                 chosen="Linux Commands"
+                 secretWord=${linuxCommands[RANDOM%17]};;
+    esac
+  
+    #Variable declarations.
+    length=${#secretWord}
+    length2=$((length-1))
+    unsolvedWorld=()
+    wordArr=()
+    wrongGuesses=()
+    allGuesses=()
+    correctGuessArr=()
+    correctGuessArr2=()
+    guessNum=1
+    guessNum2=7
+    errors=0
+    num=0
+    correctGuesses=0
+    num2=0
+    num3=0
+    repeat=true
+    guess=""
+    guessOn=true
+    z2=false
+    flag="true"
+
+    #Displays the category the user has choses, 
+    #informs user of guessing rules, and wishes 
+    #the user luck.      
+    echo
+    echo "You have chosen $chosen."
+    echo "7 incorrect guesses will result in a loss."
+    echo "I hope you studied! Good luck!"
+    echo
+
+    #Nested if loop inside of while loop. This displays the
+    #proper hangman picture by calling the fail() function
+    #according to number of errors.
+    while [ $errors -le 6 ]
+      do
+        if [ $errors -eq 0 ]
+	    then
+	    fail0
+	  elif [ $errors -eq 1 ]
+              then
+	      fail1
+	    elif [ $errors -eq 2 ]
+	        then
+	       	fail2
+	      elif [ $errors -eq 3 ]
+	       	  then
+	          fail3
+	       	elif [ $errors -eq 4 ]
+	            then
+	      	    fail4
+	          elif [ $errors -eq 5 ]
+       	     	      then
+	       	      fail5
+	       	    elif [ $errors -eq 6 ]
+	       	        then
+	       		fail6
+        fi
+
+        #Displays number of wrong guesses.
+        echo "Wrong guesses: ${wrongGuesses[@]}"
+        echo
+
+        #Populates $secretword string characters into array.
+        for a in $(seq 0 1 $length);
+          do
+	    wordArr[$a]=${secretWord:a:1}
+       	  done
+
+        #Prompts user for a letter guess.            
+        printf "Guess a letter:"
+        printf " "
+
+        #When $flag is 'true' the first condition executes and
+        #populates the array with blank spaces, then prints.
+        #When $flag is 'false' the second condition executes
+        #and only prints the array values.
+        if [ "$flag" = "true" ]
+            then
+	    for i in $(seq 0 1 $length2);
+              do
+                correctGuessArr[$i]="_"
+	        printf "${correctGuessArr[$i]}"
+	        printf " "
+              done
+          else
+            for i in $(seq 0 1 $length2);
+              do
+                printf "${correctGuessArr[$i]}"
+                printf " "
+              done
+        fi 
+	   
+        flag="false" #Set $flag value to 'false'
+ 
+        #Prints a space and reads in user input for $guess.
+        printf " "
+        read guess
+        echo
+
+        #If statement executes if the allGuesses array already
+        #contains the users current $guess, then decrements $errors.
+        #Notifies user they guessed the letter already and 
+        #proceeds to prompt and read in new user input($guess).
+        if [[ "${allGuesses[*]} " =~ " ${guess} " ]];
+            then
+	    printf "You already guessed this letter! Try again! : "
+       	    read guess
+        fi
+   
+        #Populates array with users guess and moves to next element
+        #position to populate future guesses into allGuesses array.
+        allGuesses[$num3]=$guess
+        (( num3+=1 ))
+
+        #If users $guess is in the secretWord this condition executes.
+        #The user is notified of a correct answer and 2 different
+        #correctGuessArr arrays are populated with the users $guess.
+        if [[ " ${wordArr[*]} " =~ " ${guess} " ]];
+            then
+            echo "Correct!"            
+            for i in $(seq 0 1 $length);
+              do
+       	        if [ " $guess " = " ${wordArr[$i]} " ]
+	            then
+                    correctGuessArr[$i]=$guess
+	            correctGuessArr2[$i]=$guess
+	        fi
+	      done
+          
+            #Increment variables.
+            (( num2+=1 ))
+            (( correctGuesses+=1 ))
+            (( length+=1 ))
+
+            #Declare $x and give value from correctGuessArr array.
+            #Declare $y and give value from correctGuessArr2 array.          
+            x=${correctGuessArr[@]}
+            y=${correctGuessArr2[@]}
+
+            #If $x is equal to $y the user is displayed the secretword
+            #and notified they WIN!! then breaks out of loop to end game.
+            if [ "$x" ==  "$y" ]
+                then
+                echo "The secret word is $secretWord."
+                echo "Looks like you know your stuff! You win!"
+                break
+            fi
+        fi
+
+        #If the users $guess is not in the secretWord this executes.
+        #The user is notified of the incorrect guess and the number
+        #of guesses they have left. Variables are incremented and 
+        #the wrongGuesses array is populated with the $guess.
+        if [[ !  " ${wordArr[*]} " =~ " ${guess} " ]];
+            then
+            (( guessNum2-=1 ))
+            echo "That guess is not in the secret word!"
+	    echo "You have $guessNum2 guesses left."
+	    (( errors+=1 ))
+	    wrongGuesses[$num]=$guess
+	    (( num+=1 ))	
+        fi
+
+        ((guessNum+=1))  #Increment variable of number of guesses. 
+      done
+   
+    #If statment executes when user has 7 incorrect guesses.
+    #Notifies user they lose and shows secretword.
+    if [ $errors = 7 ]
+        then
+	fail7
+	echo
+	echo "The secret word is $secretWord."
+	echo "Oh no he's dead.. You lose! Go study!"
+    fi
+
+    #Prompt user to play again and get user input for $gamePlay2 value.
+    echo
+    read -p "Would you like to play again? yes or no: " gamePlay2
+    
+    #If statement to break out of loop if user wants to quit.
+    #Ends the game.
+    if [ $gamePlay2 != "yes" ]
+        then
+	break
+    fi
+  done
+
+#Thank user. End game.
+echo -e "\nThank you for playing Hangman!"
